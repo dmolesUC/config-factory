@@ -9,9 +9,9 @@ module Factory
     def self.load_file(path)
       hash = YAML.load_file(path)
       if Environments::STANDARD_ENVIRONMENTS.any? { |k| hash.key?(k) }
-        hash.map { |k, v| [k, Environment.new(k, v)] }.to_h
+        hash.map { |k, v| [k, Environment.new(name: k, hash: v)] }.to_h
       else
-        Environment.new(DEFAULT_ENVIRONMENT, hash)
+        Environment.new(name: DEFAULT_ENVIRONMENT, hash: hash)
       end
     end
   end
