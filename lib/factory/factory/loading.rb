@@ -4,7 +4,7 @@ require_relative 'environments'
 
 module Factory
   module Factory
-    DEFAULT_ENVIRONMENT = Environments::DEVELOPMENT
+    DEFAULT_ENVIRONMENT = Environments::PRODUCTION
 
     def self.load_file(path)
       hash = YAML.load_file(path)
