@@ -29,7 +29,9 @@ module Factory
         end
       end
 
-      it 'registers the root symbol'
+      it 'registers the root symbol' do
+        expect(Factory.factory_for(:db)).to eq(MockDBFactory)
+      end
     end
 
     describe '#key' do
