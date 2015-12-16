@@ -1,0 +1,19 @@
+db:
+  adapter: mysql2
+  encoding: utf8
+  pool: 5
+  database: example_pord
+  host: mysql-dev.example.org
+  port: 3306
+source:
+  protocol: OAI
+  oai_base_url: http://oai.example.org/oai
+  metadata_prefix: some_prefix
+  set: some_set
+  seconds_granularity: true
+index:
+  adapter: solr
+  url: http://solr.example.org/
+  proxy: http://foo:bar@proxy.example.com/
+  open_timeout: 120
+  read_timeout: 300
