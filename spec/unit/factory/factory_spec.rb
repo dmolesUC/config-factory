@@ -1,11 +1,12 @@
 require 'spec_helper'
 
 module Factory
-  describe Factory do
+  module Factory
     describe '#load_file' do
       it 'loads a single-environment config file' do
-        envs = Factory.load_file('spec/data/single-environment.yml')
-        expect(envs).to be_an(Environment)
+        env = Factory.load_file('spec/data/single-environment.yml')
+        expect(env).to be_an(Environment)
+        expect(env.name).to eq(Factory::DEFAULT_ENVIRONMENT)
       end
 
       it 'loads a multi-environment config file' do
@@ -15,6 +16,7 @@ module Factory
         %w(defaults development test production).each do |env_name|
           env = envs[env_name]
           expect(env).to be_an(Environment)
+          expect(env.name).to eq(env_name)
         end
       end
     end
