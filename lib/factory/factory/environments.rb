@@ -1,4 +1,10 @@
 module Factory
+  class Environment
+    def initialize(hash)
+
+    end
+  end
+
   module Factory
     module Environments
       DEFAULTS = 'defaults'
@@ -9,8 +15,5 @@ module Factory
       STANDARD_ENVIRONMENTS = [DEFAULTS, DEVELOPMENT, TEST, PRODUCTION].freeze
     end
 
-    class Environment
-
-    end
   end
 end
