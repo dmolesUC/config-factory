@@ -7,10 +7,12 @@ class MockDBFactory
   key :adapter
 end
 
+# TODO: at this point are these factories or just products?
 class MySql2Factory < MockDBFactory
   adapter :mysql2
 end
 
+# TODO: at this point are these factories or just products?
 class Sqlite3Factory < MockDBFactory
   adapter :sqlite3
 end
