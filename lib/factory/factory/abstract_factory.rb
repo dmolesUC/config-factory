@@ -7,39 +7,16 @@ module Factory
       @config_hash = config_hash
     end
 
-    class << self
-      def register_factory(key_symbol, factory_class)
-        fail ArgumentError, "Factory #{factory_registry[key]} already registered for key symbol '#{key_symbol}'" if factory_registry.key?(key_symbol)
-        factory_registry[key_symbol] = factory_class
-      end
-
-      def factory_for(key_symbol)
-        factory_registry[key_symbol]
-      end
-
-      private
-
-      def factory_registry
-        @factory_registry ||= {}
-      end
-    end
-
     def self.included(base)
       base.extend(AbstractFactory)
     end
 
     module AbstractFactory
       attr_reader :build_product
-      attr_reader :key_symbol
       attr_reader :switch_symbol
 
       def builds(product_class)
         @build_product = product_class
-      end
-
-      def key(sym)
-        Factory.register_factory(sym, self)
-        @key_symbol = sym
       end
 
       def switch(sym)

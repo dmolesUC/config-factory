@@ -5,15 +5,6 @@ module Factory
   module Factory
 
     describe AbstractFactory do
-      describe '#key' do
-        it 'sets the key symbol' do
-          expect(SourceConfigFactory.key_symbol).to eq(:source)
-        end
-        it 'registers the factory class' do
-          expect(Factory.factory_for(:source)).to eq(SourceConfigFactory)
-        end
-      end
-
       describe '#builds' do
         it 'sets the build product' do
           expect(SourceConfigFactory.build_product).to eq(SourceConfig)

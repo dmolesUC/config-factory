@@ -1,13 +1,5 @@
 require 'factory/factory'
 
-# DBConfig
-
-class DBConfigFactory
-  include Factory::Factory
-
-  key :db
-end
-
 # SourceConfig
 
 class SourceConfig
@@ -17,7 +9,6 @@ class SourceConfigFactory
   include Factory::Factory
 
   builds SourceConfig
-  key :source
   switch :protocol
 end
 
@@ -38,7 +29,6 @@ class IndexConfigFactory
   include Factory::Factory
 
   builds IndexConfig
-  key :index
   switch :adapter
 end
 
