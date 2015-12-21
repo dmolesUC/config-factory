@@ -5,18 +5,11 @@ module Factory
   module Factory
 
     describe AbstractFactory do
-      describe '#builds' do
-        it 'sets the build product' do
-          expect(SourceConfigFactory.build_product).to eq(SourceConfig)
-        end
-      end
-
       describe '#switch' do
         it 'sets the switch symbol' do
           expect(SourceConfigFactory.switch_symbol).to eq(:protocol)
         end
         it 'defines the subclass registration method' do
-          # TODO: move product registry into AbstractFactory
           { OAI: OAISourceConfig, Resync: ResyncSourceConfig }.each do |k, v|
             expect(SourceConfigFactory.product_for(k)).to eq(v)
           end

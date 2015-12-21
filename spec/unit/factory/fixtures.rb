@@ -5,19 +5,16 @@ require 'factory/factory'
 class SourceConfig
 end
 
-class SourceConfigFactory
-  include Factory::Factory
-
-  builds SourceConfig
-  switch :protocol
-end
-
 class OAISourceConfig < SourceConfig
-  protocol :OAI
 end
 
 class ResyncSourceConfig < SourceConfig
-  protocol :Resync
+end
+
+class SourceConfigFactory
+  include Factory::Factory
+
+  switch :protocol, OAI: OAISourceConfig, Resync: ResyncSourceConfig
 end
 
 # IndexConfig
@@ -25,12 +22,11 @@ end
 class IndexConfig
 end
 
+class SolrConfig < IndexConfig
+end
+
 class IndexConfigFactory
   include Factory::Factory
 
-  builds IndexConfig
-  switch :adapter
-end
-
-class SolrConfig < IndexConfig
+  switch :adapter, solr: SolrConfig
 end
