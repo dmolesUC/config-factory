@@ -1,20 +1,26 @@
 module Factory
   module Factory
 
+    attr_reader :config_hash
+
+    def initialize(config_hash)
+      @config_hash = config_hash
+    end
+
     class << self
-      def register(root_symbol, factory_class)
-        fail ArgumentError, "Factory #{registry[key]} already registered for root symbol '#{root_symbol}'" if registry.key?(root_symbol)
-        registry[root_symbol] = factory_class
+      def register_factory(key_symbol, factory_class)
+        fail ArgumentError, "Factory #{factory_registry[key]} already registered for key symbol '#{key_symbol}'" if factory_registry.key?(key_symbol)
+        factory_registry[key_symbol] = factory_class
       end
 
-      def factory_for(root_symbol)
-        registry[root_symbol]
+      def factory_for(key_symbol)
+        factory_registry[key_symbol]
       end
 
       private
 
-      def registry
-        @registry ||= {}
+      def factory_registry
+        @factory_registry ||= {}
       end
     end
 
@@ -23,34 +29,41 @@ module Factory
     end
 
     module AbstractFactory
-
-      attr_reader :root_symbol
+      attr_reader :build_product
       attr_reader :key_symbol
+      attr_reader :switch_symbol
 
-      def root(sym)
-        Factory.register(sym, self)
-        @root_symbol = sym
+      def builds(product_class)
+        @build_product = product_class
       end
 
       def key(sym)
-        reg = registry
-        define_singleton_method(sym) do |val|
-          puts "#{self}.#{sym}(#{val})"
-          reg[val] = self
-        end
+        Factory.register_factory(sym, self)
         @key_symbol = sym
       end
 
-      def subclass_for(k)
-        registry[k]
+      def switch(sym)
+        @switch_symbol = sym
+        factory_class = self
+        build_product.define_singleton_method(sym) do |val|
+          factory_class.register_product(val, self)
+        end
+      end
+
+      def register_product(switch_symbol, product_class)
+        fail ArgumentError, "Product #{product_registry[switch]} already registered for switch symbol '#{switch_symbol}'" if product_registry.key?(switch_symbol)
+        product_registry[switch_symbol] = product_class
+      end
+
+      def product_for(switch_symbol)
+        product_registry[switch_symbol]
       end
 
       private
 
-      def registry
-        @registry ||= {}
+      def product_registry
+        @product_registry ||= {}
       end
     end
-
   end
 end

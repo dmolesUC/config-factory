@@ -1,51 +1,45 @@
 require 'spec_helper'
-
-class MockDBFactory
-  include Factory::Factory
-
-  root :db
-  key :adapter
-end
-
-# TODO: at this point are these factories or just products?
-class MySql2Factory < MockDBFactory
-  adapter :mysql2
-end
-
-# TODO: at this point are these factories or just products?
-class Sqlite3Factory < MockDBFactory
-  adapter :sqlite3
-end
+require_relative 'fixtures'
 
 module Factory
   module Factory
-    describe '#root' do
 
-      it 'sets the root symbol' do
-        expect(MockDBFactory.root_symbol).to eq(:db)
-      end
-
-      it "doesn't set the root symbol on subclasses" do
-        [MySql2Factory, Sqlite3Factory].each do |c|
-          expect(c.root_symbol).to be_nil
+    describe AbstractFactory do
+      describe '#key' do
+        it 'sets the key symbol' do
+          expect(SourceConfigFactory.key_symbol).to eq(:source)
+        end
+        it 'registers the factory class' do
+          expect(Factory.factory_for(:source)).to eq(SourceConfigFactory)
         end
       end
 
-      it 'registers the root symbol' do
-        expect(Factory.factory_for(:db)).to eq(MockDBFactory)
-      end
-    end
-
-    describe '#key' do
-      it 'registers the subclass key' do
-        expect(MockDBFactory.key_symbol).to eq(:adapter)
+      describe '#builds' do
+        it 'sets the build product' do
+          expect(SourceConfigFactory.build_product).to eq(SourceConfig)
+        end
       end
 
-      it 'defines the subclass registration method' do
-        { mysql2: MySql2Factory, sqlite3: Sqlite3Factory }.each do |k, v|
-          expect(MockDBFactory.subclass_for(k)).to eq(v)
+      describe '#switch' do
+        it 'sets the switch symbol' do
+          expect(SourceConfigFactory.switch_symbol).to eq(:protocol)
+        end
+        it 'defines the subclass registration method' do
+          # TODO: move product registry into AbstractFactory
+          { OAI: OAISourceConfig, Resync: ResyncSourceConfig }.each do |k, v|
+            expect(SourceConfigFactory.product_for(k)).to eq(v)
+          end
         end
       end
     end
+
+    describe '#initialize' do
+      it 'sets the config hash' do
+        hash = { adapter: 'solr', url: 'http://example.org', proxy: 'http://proxy.example.org' }
+        factory = IndexConfigFactory.new(hash)
+        expect(factory.config_hash).to eq(hash)
+      end
+    end
+
   end
 end
