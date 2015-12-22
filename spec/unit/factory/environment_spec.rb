@@ -16,9 +16,10 @@ module Factory
           expect { Environment.new(name: '', hash: {}) }.to raise_error(ArgumentError)
         end
         it 'registers the configurations' do
-          env = Environment.new(name: 'test', hash: YAML.load_file('spec/data/single-environment.yml'))
-          [:db, :source, :index].each do |key_symbol|
-            expect(env.config_for(key_symbol)).to be_a(Hash)
+          yaml_hash = YAML.load_file('spec/data/single-environment.yml')
+          env = Environment.new(name: 'test', hash: yaml_hash)
+          %w(db source index).each do |key|
+            expect(env.config_for(key)).to eq(yaml_hash[key])
           end
         end
       end

@@ -39,7 +39,7 @@ module Factory
 
       def register(k, v, product_class)
         product_registry[k] ||= {}
-        product_registry[k][v.to_s] = product_class
+        product_registry[k][v] = product_class
       end
 
       def product_registry
@@ -51,7 +51,7 @@ module Factory
       end
 
       def product_for(k, v)
-        (products = product_registry[k]) && products[v.to_s]
+        (products = product_registry[k]) && products[v]
       end
 
     end

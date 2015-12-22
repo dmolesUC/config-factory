@@ -6,11 +6,11 @@ module Factory
 
       def initialize(name:, hash:)
         self.name = name
-        @configs = hash.map { |k, v| [k.to_s, v] }.to_h
+        @configs = hash.map { |k, v| [k, v] }.to_h
       end
 
       def config_for(key)
-        @configs[key.to_s]
+        @configs[key]
       end
 
       private

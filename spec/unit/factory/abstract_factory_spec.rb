@@ -7,7 +7,7 @@ module Factory
     describe AbstractFactory do
       describe '#builds' do
         it 'registers the config keys and product classes' do
-          { OAI: OAISourceConfig, Resync: ResyncSourceConfig }.each do |k, v|
+          { 'OAI' => OAISourceConfig, 'Resync' => ResyncSourceConfig }.each do |k, v|
             product_class = SourceConfigFactory.send(:product_for, :protocol, k)
             expect(product_class).to eq(v)
           end

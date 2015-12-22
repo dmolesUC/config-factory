@@ -19,7 +19,6 @@ class SourceConfigFactory
   include Factory::Factory
 
   with protocol: 'OAI', builds: OAISourceConfig
-  # with protocol: 'Resync', builds: ResyncSourceConfig
   with 'Resync', builds: ResyncSourceConfig
 end
 
