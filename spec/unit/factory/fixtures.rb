@@ -10,7 +10,7 @@ class OAISourceConfig < SourceConfig
   attr_reader :metadata_prefix
   attr_reader :set
   attr_reader :seconds_granularity
-  
+
   def initialize(oai_base_url:, metadata_prefix:, set: nil, seconds_granularity: false)
     @oai_base_url = oai_base_url
     @metadata_prefix = metadata_prefix
