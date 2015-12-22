@@ -1,14 +1,14 @@
 module Factory
   module Factory
 
-    attr_reader :config_hash
+    attr_reader :args
 
-    def initialize(config_hash)
-      @config_hash = config_hash
+    def initialize(args)
+      @args = args
     end
 
     def build
-      self.class.build_from(config_hash)
+      self.class.build_from(args)
     end
 
     def self.included(base)
@@ -29,10 +29,10 @@ module Factory
         end
       end
 
-      def build_from(config_hash)
-        k, product = config_hash.lazy.map { |k, v| [k, product_for(k, v)] }.find { |r| r }
-        sub_config = config_hash.select { |k2, _v2| k2 != k }
-        product.new(sub_config)
+      def build_from(args)
+        k, product = args.lazy.map { |k, v| [k, product_for(k, v)] }.find { |r| r }
+        product_args = args.select { |k2, _v2| k2 != k }
+        product.new(product_args)
       end
 
       private

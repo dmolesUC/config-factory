@@ -20,8 +20,10 @@ module Factory
           factory = SourceConfigFactory.new(config_hash)
           product = factory.build
           expect(product).to be_an(OAISourceConfig)
-          sub_config_hash = { oai_base_url: 'http://oai.example.org/oai', metadata_prefix: 'some_prefix', set: 'some_set', seconds_granularity: true }
-          expect(product.config_hash).to eq(sub_config_hash)
+          args = { oai_base_url: 'http://oai.example.org/oai', metadata_prefix: 'some_prefix', set: 'some_set', seconds_granularity: true }
+          args.each do |k, v|
+            expect(product.send(k)).to eq(v)
+          end
         end
       end
     end
@@ -30,7 +32,7 @@ module Factory
       it 'sets the config hash' do
         hash = { adapter: 'solr', url: 'http://example.org', proxy: 'http://proxy.example.org' }
         factory = IndexConfigFactory.new(hash)
-        expect(factory.config_hash).to eq(hash)
+        expect(factory.args).to eq(hash)
       end
     end
 

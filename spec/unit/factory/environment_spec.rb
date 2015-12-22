@@ -18,8 +18,9 @@ module Factory
         it 'registers the configurations' do
           yaml_hash = YAML.load_file('spec/data/single-environment.yml')
           env = Environment.new(name: 'test', hash: yaml_hash)
-          %w(db source index).each do |key|
-            expect(env.config_for(key)).to eq(yaml_hash[key])
+          [:db, :source, :index].each do |key|
+            expected = yaml_hash[key.to_s].map { |k, v| [k.to_sym, v] }.to_h
+            expect(env.config_for(key)).to eq(expected)
           end
         end
       end

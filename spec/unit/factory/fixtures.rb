@@ -3,16 +3,27 @@ require 'factory/factory'
 # SourceConfig
 
 class SourceConfig
-  attr_reader :config_hash
-  def initialize(config_hash)
-    @config_hash = config_hash
-  end
 end
 
 class OAISourceConfig < SourceConfig
+  attr_reader :oai_base_url
+  attr_reader :metadata_prefix
+  attr_reader :set
+  attr_reader :seconds_granularity
+  
+  def initialize(oai_base_url:, metadata_prefix:, set: nil, seconds_granularity: false)
+    @oai_base_url = oai_base_url
+    @metadata_prefix = metadata_prefix
+    @set = set
+    @seconds_granularity = seconds_granularity
+  end
 end
 
 class ResyncSourceConfig < SourceConfig
+  attr_reader :capability_list_url
+  def initialize(capability_list_url:)
+    @capability_list_url = capability_list_url
+  end
 end
 
 class SourceConfigFactory
@@ -28,6 +39,19 @@ class IndexConfig
 end
 
 class SolrConfig < IndexConfig
+  attr_reader :adapter
+  attr_reader :url
+  attr_reader :proxy
+  attr_reader :open_timeout
+  attr_reader :read_timeout
+
+  def initialize(adapter:, url:, proxy: nil, open_timeout: 60, read_timeout: 120)
+    @adapter = adapter
+    @url = url
+    @proxy = proxy
+    @open_timeout = open_timeout
+    @read_timeout = read_timeout
+  end
 end
 
 class IndexConfigFactory
