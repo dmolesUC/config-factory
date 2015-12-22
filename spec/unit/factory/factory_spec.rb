@@ -6,7 +6,7 @@ module Factory
       it 'loads a single-environment config file' do
         env = Factory.load_file('spec/data/single-environment.yml')
         expect(env).to be_an(Environment)
-        expect(env.name).to eq(Factory::DEFAULT_ENVIRONMENT)
+        expect(env.name).to eq(Environments::DEFAULT_ENVIRONMENT)
       end
 
       it 'loads a multi-environment config file' do
