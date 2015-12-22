@@ -64,7 +64,7 @@ module Factory
 
       def build_from(config_hash)
         k, v, product = config_hash.lazy.map { |k, v| [k, v, product_for(k, v)] }.find { |r| r }
-        sub_config = config_hash.select { |k2, v2| k2 != k }
+        sub_config = config_hash.select { |k2, _v2| k2 != k }
         product.new(sub_config)
       end
     end
