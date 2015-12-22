@@ -13,7 +13,7 @@ module Factory
         envs = Factory.load_file('spec/data/multiple-environments.yml')
         expect(envs).to be_a(Hash)
         expect(envs.size).to eq(4)
-        %w(defaults development test production).each do |env_name|
+        [:defaults, :development, :test, :production].each do |env_name|
           env = envs[env_name]
           expect(env).to be_an(Environment)
           expect(env.name).to eq(env_name)

@@ -16,7 +16,7 @@ module Factory
       private
 
       def name=(v)
-        fail ArgumentError, 'Environment must have a name' unless v && !v.empty?
+        fail ArgumentError, 'Environment name must be a symbol' unless v && v.is_a?(Symbol)
         @name = v
       end
 
