@@ -4,13 +4,13 @@ module Factory
 
       attr_reader :name
 
-      def initialize(name:, hash:)
+      def initialize(name:, factory_configs:)
         self.name = name
-        @configs = deep_symbolize_keys(hash)
+        @configs = factory_configs
       end
 
-      def config_for(key)
-        @configs[key]
+      def args_for(factory)
+        @configs[factory]
       end
 
       private
@@ -18,13 +18,6 @@ module Factory
       def name=(v)
         fail ArgumentError, 'Environment name must be a symbol' unless v && v.is_a?(Symbol)
         @name = v
-      end
-
-      def deep_symbolize_keys(val)
-        return val unless val.is_a?(Hash)
-        val.map do |k, v|
-          [k.respond_to?(:to_sym) ? k.to_sym : k, deep_symbolize_keys(v)]
-        end.to_h
       end
 
     end

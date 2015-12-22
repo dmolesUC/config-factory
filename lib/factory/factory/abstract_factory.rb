@@ -3,6 +3,14 @@ module Factory
 
     attr_reader :args
 
+    # TODO: deep_symbolize_keys? or do we need more DSLs again?
+    # def deep_symbolize_keys(val)
+    #   return val unless val.is_a?(Hash)
+    #   val.map do |k, v|
+    #     [k.respond_to?(:to_sym) ? k.to_sym : k, deep_symbolize_keys(v)]
+    #   end.to_h
+    # end
+
     def initialize(args)
       @args = args
     end
