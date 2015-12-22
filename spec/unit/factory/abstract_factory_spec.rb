@@ -5,14 +5,23 @@ module Factory
   module Factory
 
     describe AbstractFactory do
-      describe '#switch' do
-        it 'sets the switch symbol' do
-          expect(SourceConfigFactory.switch_symbol).to eq(:protocol)
-        end
-        it 'defines the subclass registration method' do
+      describe '#builds' do
+        it 'registers the config keys and product classes' do
           { OAI: OAISourceConfig, Resync: ResyncSourceConfig }.each do |k, v|
-            expect(SourceConfigFactory.product_for(k)).to eq(v)
+            product_class = SourceConfigFactory.send(:product_for, :protocol, k)
+            expect(product_class).to eq(v)
           end
+        end
+      end
+
+      describe '#build' do
+        it 'builds the correct class with the correct config' do
+          config_hash = { protocol: 'OAI', oai_base_url: 'http://oai.example.org/oai', metadata_prefix: 'some_prefix', set: 'some_set', seconds_granularity: true }
+          factory = SourceConfigFactory.new(config_hash)
+          product = factory.build
+          expect(product).to be_an(OAISourceConfig)
+          sub_config_hash = { oai_base_url: 'http://oai.example.org/oai', metadata_prefix: 'some_prefix', set: 'some_set', seconds_granularity: true }
+          expect(product.config_hash).to eq(sub_config_hash)
         end
       end
     end
