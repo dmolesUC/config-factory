@@ -32,7 +32,7 @@ module Factory
       it 'sets the config hash' do
         hash = { adapter: 'solr', url: 'http://example.org', proxy: 'http://proxy.example.org' }
         factory = IndexConfigFactory.new(hash)
-        expect(factory.args).to eq(hash)
+        expect(factory.arg_hash).to eq(hash)
       end
     end
 
