@@ -9,7 +9,31 @@ A gem for creating configuration classes using the
 [Abstract Factory](https://web.archive.org/web/20111109224959/http://www.informit.com/articles/article.aspx?p=1398599),
 pattern, with run-time configuration provided by hashes or YAML files.
 
-## Single-environment example
+## Example
+
+```ruby
+class SourceConfig
+  include Config::Factory
+
+  key :protocol
+end
+
+class OAISourceConfig < SourceConfig
+  protocol 'OAI'
+
+  def initialize(oai_base_url:, metadata_prefix:, set: nil, seconds_granularity: false)
+  end
+end
+
+class ResyncSourceConfig < SourceConfig
+  protocol 'Resync'
+
+  def initialize(capability_list_url:)
+  end
+end
+```
+
+### Single-environment example
 
 ```
 # config.yml
@@ -20,18 +44,25 @@ source:
   metadata_prefix: some_prefix
   set: some_set
   seconds_granularity: true
-index:
-  adapter: solr
-  url: http://solr.example.org/
-  proxy: http://foo:bar@proxy.example.com/
-  open_timeout: 120
-  read_timeout: 300
-db:
-  adapter: mysql2
-  encoding: utf8
-  pool: 5
-  database: example_pord
-  host: mysql-dev.example.org
-  port: 3306
 ```
 
+<!-- TODO: Figure out environment/config loading sequence -->
+
+### Multiple-environment example
+
+```
+# config.yml
+
+test:
+  source:
+    protocol: Resync
+    capability_list_url: http://localhost:8888/capabilitylist.xml
+
+production:
+  source:
+    protocol: OAI
+    oai_base_url: http://oai.example.org/oai
+    metadata_prefix: some_prefix
+    set: some_set
+    seconds_granularity: true
+```

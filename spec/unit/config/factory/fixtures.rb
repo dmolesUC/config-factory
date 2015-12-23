@@ -31,6 +31,8 @@ class OAISourceConfig < SourceConfig
 end
 
 class ResyncSourceConfig < SourceConfig
+  protocol 'Resync'
+
   attr_reader :capability_list_url
 
   def initialize(capability_list_url:)
