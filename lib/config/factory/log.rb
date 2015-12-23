@@ -1,6 +1,6 @@
 require 'logger'
 
-module Factory
+module Config
   module Factory
 
     class << self

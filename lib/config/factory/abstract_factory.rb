@@ -1,4 +1,4 @@
-module Factory
+module Config
   module Factory
     def self.included(base)
       base.extend(AbstractFactory)
@@ -29,10 +29,6 @@ module Factory
         val.map do |k, v|
           [k.respond_to?(:to_sym) ? k.to_sym : k, deep_symbolize_keys(v)]
         end.to_h
-      end
-
-      def product_for(v)
-        products[v]
       end
 
       def products

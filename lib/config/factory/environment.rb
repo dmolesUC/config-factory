@@ -1,4 +1,4 @@
-module Factory
+module Config
   module Factory
     class Environment
 

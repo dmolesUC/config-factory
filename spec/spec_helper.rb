@@ -24,6 +24,6 @@ RSpec.configure do |config|
 end
 
 # ------------------------------------------------------------
-# Factory::Factory
+# Config::Factory
 
-require 'factory/factory'
+require 'config/factory'

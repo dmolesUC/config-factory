@@ -2,7 +2,7 @@ require 'yaml'
 require_relative 'environment'
 require_relative 'environments'
 
-module Factory
+module Config
   module Factory
     def self.load_file(path)
       hash = YAML.load_file(path)

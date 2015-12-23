@@ -1,4 +1,4 @@
-module Factory
+module Config
   module Factory
     module Environments
       DEFAULT_ENVIRONMENT = :production

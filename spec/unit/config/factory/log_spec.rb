@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-module Factory
+module Config
   module Factory
     describe 'log' do
       it 'logs to stdout in a timestamp-first format' do

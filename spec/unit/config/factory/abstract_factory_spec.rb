@@ -1,7 +1,7 @@
 require 'spec_helper'
 require_relative 'fixtures'
 
-module Factory
+module Config
   module Factory
     describe AbstractFactory do
       describe '#build_from' do

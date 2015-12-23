@@ -1,4 +1,4 @@
-module Factory
+module Config
   module Factory
     # The name of this gem
     NAME = 'factory-factory'

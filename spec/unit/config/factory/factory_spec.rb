@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-module Factory
+module Config
   module Factory
     describe '#load_file' do
       it 'loads a single-environment config file' do

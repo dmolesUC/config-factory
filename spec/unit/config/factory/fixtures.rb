@@ -1,8 +1,8 @@
-require 'factory/factory'
+require 'config/factory'
 require 'uri'
 
 class SourceConfig
-  include Factory::Factory
+  include Config::Factory
 
   key :protocol
 
@@ -42,7 +42,7 @@ end
 # IndexConfig
 
 class IndexConfig
-  include Factory::Factory
+  include Config::Factory
 
   key :adapter
 

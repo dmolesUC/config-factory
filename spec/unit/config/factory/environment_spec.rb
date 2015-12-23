@@ -1,7 +1,7 @@
 require 'spec_helper'
 require_relative 'fixtures'
 
-module Factory
+module Config
   module Factory
     describe Environment do
       describe '#new' do
