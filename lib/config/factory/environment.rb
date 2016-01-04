@@ -4,13 +4,14 @@ module Config
 
       attr_reader :name
 
-      def initialize(name:, factory_configs:)
+      def initialize(name:, configs:)
         self.name = name
-        @configs = factory_configs
+        @configs = configs
       end
 
-      def args_for(factory)
-        @configs[factory]
+      def args_for(config_name)
+        config_name = config_name.to_s unless config_name.is_a?(String)
+        @configs[config_name]
       end
 
       private

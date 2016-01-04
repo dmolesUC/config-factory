@@ -14,7 +14,6 @@ pattern, with run-time configuration provided by hashes or YAML files.
 ```ruby
 class SourceConfig
   include Config::Factory
-
   key :protocol
 end
 
@@ -35,9 +34,9 @@ end
 
 ### Single-environment example
 
-```
-# config.yml
+Configuration file:
 
+```YAML
 source:
   protocol: OAI
   oai_base_url: http://oai.example.org/oai
@@ -46,13 +45,22 @@ source:
   seconds_granularity: true
 ```
 
+Loading:
+
+```ruby
+env = Environments.load_file('spec/data/single-environment.yml')
+# => #<Config::Factory::Environment:0x007fe8d3883240 @name=:production, @configs={"source"=>{"protocol"=>"OAI", "oai_base_url"=>"http://oai.example.org/oai", "metadata_prefix"=>"some_prefix", "set"=>"some_set", "seconds_granularity"=>true}}> 
+source_config = SourceConfig.for_environment(env, :source)
+# => #<OAISourceConfig:0x007fe8d38b3990 @oai_base_url="http://oai.example.org/oai", @metadata_prefix="some_prefix", @set="some_set", @seconds_granularity=true> 
+```
+
 <!-- TODO: Figure out environment/config loading sequence -->
 
 ### Multiple-environment example
 
-```
-# config.yml
+Configuration file:
 
+```YAML
 test:
   source:
     protocol: Resync
@@ -65,4 +73,15 @@ production:
     metadata_prefix: some_prefix
     set: some_set
     seconds_granularity: true
+```
+
+Loading:
+
+```ruby
+envs = Environments.load_file('/tmp/config.yml')
+# => {:test=>#<Config::Factory::Environment:0x007fe8d3863dc8 @name=:test, @configs={"source"=>{"protocol"=>"Resync", "capability_list_url"=>"http://localhost:8888/capabilitylist.xml"}}>, :production=>#<Config::Factory::Environment:0x007fe8d3863be8 @name=:production, @configs={"source"=>{"protocol"=>"OAI", "oai_base_url"=>"http://oai.example.org/oai", "metadata_prefix"=>"some_prefix", "set"=>"some_set", "seconds_granularity"=>true}}>} 
+env = envs[:test]
+# => #<Config::Factory::Environment:0x007fe8d383a400 @name=:test, @configs={"source"=>{"protocol"=>"Resync", "capability_list_url"=>"http://localhost:8888/capabilitylist.xml"}}> 
+source_config = SourceConfig.for_environment(env, :source)
+# => #<ResyncSourceConfig:0x007fe8d48180c0 @capability_list_url="http://localhost:8888/capabilitylist.xml"> 
 ```

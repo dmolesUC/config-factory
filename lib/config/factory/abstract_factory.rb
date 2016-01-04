@@ -15,10 +15,16 @@ module Config
         end
       end
 
+      def for_environment(env, key)
+        arg_hash = env.args_for(key)
+        build_from(arg_hash)
+      end
+
       def build_from(arg_hash)
         args = deep_symbolize_keys(arg_hash)
         key_value = args.delete(product_key)
         product_class = products[key_value]
+        # TODO: Raise sensible exception if not found
         product_class.new(args)
       end
 

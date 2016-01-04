@@ -15,6 +15,21 @@ module Config
           end
         end
       end
+
+      describe '#for_environment' do
+        it 'builds the correct class with the correct config' do
+          config_hash = { protocol: 'OAI', oai_base_url: 'http://oai.example.org/oai', metadata_prefix: 'some_prefix', set: 'some_set', seconds_granularity: true }
+          env = instance_double(Environment)
+          expect(env).to receive(:args_for).with(:source) { config_hash }
+
+          product = SourceConfig.for_environment(env, :source)
+          expect(product).to be_an(OAISourceConfig)
+          args = { oai_base_url: URI('http://oai.example.org/oai'), metadata_prefix: 'some_prefix', set: 'some_set', seconds_granularity: true }
+          args.each do |k, v|
+            expect(product.send(k)).to eq(v)
+          end
+        end
+      end
     end
   end
 end
