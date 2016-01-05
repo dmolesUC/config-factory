@@ -14,6 +14,11 @@ module Config
             expect(product.send(k)).to eq(v)
           end
         end
+
+        it 'raises a sensible exception if no product found for the key' do
+          config_hash = { protocol: 'Elvis' }
+          expect { SourceConfig.build_from(config_hash) }.to raise_error(ArgumentError, /SourceConfig.*protocol.*Elvis/)
+        end
       end
 
       describe '#for_environment' do

@@ -24,7 +24,7 @@ module Config
         args = deep_symbolize_keys(arg_hash)
         key_value = args.delete(product_key)
         product_class = products[key_value]
-        # TODO: Raise sensible exception if not found
+        fail ArgumentError, "No #{self.name} product class found for #{product_key}: #{key_value}" unless product_class
         product_class.new(args)
       end
 
