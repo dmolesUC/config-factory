@@ -10,6 +10,7 @@ module Config
 
       def self.load_file(path)
         hash = YAML.load_file(path)
+        fail IOError, "Unable to load YAML file #{path}" unless hash && hash.is_a?(Hash)
         load_hash(hash)
       end
 
