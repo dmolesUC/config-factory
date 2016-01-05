@@ -12,6 +12,7 @@ module Config
         load_hash(hash)
       end
 
+      # TODO: separate array and single-environment loading
       def self.load_hash(hash)
         if Environments::STANDARD_ENVIRONMENTS.any? { |k| hash.key?(k.to_s) }
           hash.map do |k, v|
