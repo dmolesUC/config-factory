@@ -1,7 +1,7 @@
 module Config
   module Factory
     # The name of this gem
-    NAME = 'factory-factory'
+    NAME = 'config-factory'
 
     # The version of this gem
     VERSION = '0.0.1'
