@@ -6,7 +6,7 @@ module Config
 
       def initialize(name:, configs:)
         self.name = name
-        @configs = configs
+        self.configs = configs
       end
 
       def args_for(config_name)
@@ -28,6 +28,11 @@ module Config
       def name=(v)
         fail ArgumentError, 'Environment name must be a symbol' unless v && v.is_a?(Symbol)
         @name = v
+      end
+
+      def configs=(v)
+        fail ArgumentError, 'Configs must be a hash' unless v && v.respond_to?(:[])
+        @configs = v
       end
 
     end
