@@ -14,6 +14,15 @@ module Config
         @configs[config_name]
       end
 
+      def self.load_file(path)
+        hash = YAML.load_file(path)
+        load_hash(hash)
+      end
+
+      def self.load_hash(hash)
+        Environment.new(name: Environments::DEFAULT_ENVIRONMENT, configs: hash)
+      end
+
       private
 
       def name=(v)

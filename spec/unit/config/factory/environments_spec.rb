@@ -4,12 +4,6 @@ module Config
   module Factory
     module Environments
       describe '#load_file' do
-        it 'loads a single-environment config file' do
-          env = Environments.load_file('spec/data/single-environment.yml')
-          expect(env).to be_an(Environment)
-          expect(env.name).to eq(Environments::DEFAULT_ENVIRONMENT)
-        end
-
         it 'loads a multi-environment config file' do
           envs = Environments.load_file('spec/data/multiple-environments.yml')
           expect(envs).to be_a(Hash)

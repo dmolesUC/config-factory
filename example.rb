@@ -31,7 +31,7 @@ end
 
 # Single-environment example
 
-env = Environments.load_file('spec/data/single-environment.yml')
+env = Environment.load_file('spec/data/single-environment.yml')
 source_config = SourceConfig.for_environment(env, :source)
 puts source_config
 # => #<OAISourceConfig:0x007fe8d38b3990 @oai_base_url="http://oai.example.org/oai", @metadata_prefix="some_prefix", @set="some_set", @seconds_granularity=true>

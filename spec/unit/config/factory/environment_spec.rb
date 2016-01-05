@@ -23,6 +23,14 @@ module Config
           end
         end
       end
+
+      describe '#load_file' do
+        it 'loads a single-environment config file' do
+          env = Environment.load_file('spec/data/single-environment.yml')
+          expect(env).to be_an(Environment)
+          expect(env.name).to eq(Environments::DEFAULT_ENVIRONMENT)
+        end
+      end
     end
   end
 end
