@@ -1,3 +1,7 @@
+## 0.0.5 (2 March 2016)
+
+- Add `AbstractFactory#from_file`
+
 ## 0.0.4 (27 January 2016)
 
 - Make gemspec smart enough to handle SSH checkouts

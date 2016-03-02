@@ -15,9 +15,14 @@ module Config
         end
       end
 
-      def for_environment(env, key)
-        arg_hash = env.args_for(key)
+      def for_environment(env, config_name)
+        arg_hash = env.args_for(config_name)
         build_from(arg_hash)
+      end
+
+      def from_file(path, config_name)
+        env = Environment.load_file(path)
+        for_environment(env, config_name)
       end
 
       def build_from(arg_hash)

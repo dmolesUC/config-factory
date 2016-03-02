@@ -42,6 +42,17 @@ module Config
           expect { SourceConfig.for_environment(env, :source) }.to raise_error(ArgumentError, /SourceConfig.*protocol.*Elvis/)
         end
       end
+
+      describe '#from_file' do
+        it 'builds the correct class with the correct config' do
+          product = SourceConfig.from_file('spec/data/single-environment.yml', :source)
+          expect(product).to be_an(OAISourceConfig)
+          args = { oai_base_url: URI('http://oai.example.org/oai'), metadata_prefix: 'some_prefix', set: 'some_set', seconds_granularity: true }
+          args.each do |k, v|
+            expect(product.send(k)).to eq(v)
+          end
+        end
+      end
     end
   end
 end
