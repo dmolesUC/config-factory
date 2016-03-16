@@ -1,3 +1,7 @@
+## 0.0.6 (next)
+
+- Better error messages for missing keys, configs, etc.
+
 ## 0.0.5 (2 March 2016)
 
 - Add `AbstractFactory#from_file`

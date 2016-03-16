@@ -24,6 +24,10 @@ module Config
         Environment.new(name: Environments::DEFAULT_ENVIRONMENT, configs: hash)
       end
 
+      def to_s
+        "#{self.class}: name = #{@name}, configs = #{@configs})"
+      end
+
       private
 
       def name=(v)

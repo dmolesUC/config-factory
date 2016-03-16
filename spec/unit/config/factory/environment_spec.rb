@@ -48,6 +48,44 @@ module Config
           end
         end
       end
+
+      describe '#to_s' do
+        it 'includes the name' do
+          env = Environment.load_file('spec/data/single-environment.yml')
+          expect(env.to_s).to include(Environments::DEFAULT_ENVIRONMENT.to_s)
+        end
+
+        it 'includes the hash' do
+          h = {
+            'db' =>
+            {
+              'adapter' => 'mysql2',
+              'encoding' => 'utf8',
+              'pool' => 5,
+              'database' => 'example_pord',
+              'host' => 'mysql-dev.example.org',
+              'port' => 3306
+            },
+            'source' => {
+              'protocol' => 'OAI',
+              'oai_base_url' => 'http://oai.example.org/oai',
+              'metadata_prefix' => 'some_prefix',
+              'set' => 'some_set',
+              'seconds_granularity' => true
+            },
+            'index' => {
+              'adapter' => 'solr',
+              'url' => 'http://solr.example.org/',
+              'proxy' => 'http://foo:bar@proxy.example.com/',
+              'open_timeout' => 120,
+              'read_timeout' => 300
+            }
+          }
+          env = Environment.load_hash(h)
+          expect(env.to_s).to include(h.to_s)
+        end
+      end
+
     end
   end
 end
