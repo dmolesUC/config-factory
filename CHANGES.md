@@ -1,4 +1,4 @@
-## 0.0.6 (next)
+## 0.0.6 (16 March 2016)
 
 - Better error messages for missing keys, configs, etc.
 
