@@ -41,6 +41,16 @@ class ResyncSourceConfig < SourceConfig
   end
 end
 
+class DBConfig
+  include Config::Factory
+
+  attr_reader :connection_info
+
+  def initialize(connection_info)
+    @connection_info = connection_info
+  end
+end
+
 # IndexConfig
 
 class IndexConfig

@@ -29,14 +29,20 @@ module Config
       def build_from(arg_hash)
         fail ArgumentError, "nil argument hash passed to #{self}.build_from" unless arg_hash
         args = deep_symbolize_keys(arg_hash)
-        fail ArgumentError, "product key #{product_key} not found in argument hash #{args}" unless args.key?(product_key)
-        key_value = args.delete(product_key)
-        product_class = products[key_value]
-        fail ArgumentError, "No #{name} product class found for #{product_key}: #{key_value}" unless product_class
+        product_class = find_product_class(args)
         product_class.new(args)
       end
 
       private
+
+      def find_product_class(args)
+        return self unless product_key
+        fail ArgumentError, "product key #{product_key} not found in argument hash #{args}" unless args.key?(product_key)
+        key_value = args.delete(product_key)
+        product_class = products[key_value]
+        fail ArgumentError, "No #{name} product class found for #{product_key}: #{key_value}" unless product_class
+        product_class
+      end
 
       def deep_symbolize_keys(val)
         return val unless val.is_a?(Hash)

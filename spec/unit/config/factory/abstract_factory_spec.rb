@@ -19,6 +19,20 @@ module Config
           config_hash = { protocol: 'Elvis' }
           expect { SourceConfig.build_from(config_hash) }.to raise_error(ArgumentError, /SourceConfig.*protocol.*Elvis/)
         end
+
+        it 'supports concrete factories without product keys' do
+          config_hash = {
+            adapter: 'mysql2',
+            encoding: 'utf8',
+            pool: 5,
+            database: 'example_pord',
+            host: 'mysql-dev.example.org',
+            port: 3306
+          }
+          product = DBConfig.build_from(config_hash)
+          expect(product).to be_a(DBConfig)
+          expect(product.connection_info).to eq(config_hash)
+        end
       end
 
       describe '#for_environment' do

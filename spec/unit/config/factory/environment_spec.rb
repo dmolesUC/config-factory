@@ -28,6 +28,15 @@ module Config
         it 'requires configs to be hash-like' do
           expect { Environment.new(name: :name, configs: false) }.to raise_error(ArgumentError)
         end
+        it 'reads a standard ActiveRecord db config' do
+          yaml_hash = {
+            'adapter' => 'sqlite3',
+            'database' => 'db/development.sqlite3',
+            'pool' => 5,
+            'timeout' => 5000
+          }
+          Environment.new(name: :test, configs: yaml_hash)
+        end
       end
 
       describe '#load_file' do
@@ -57,8 +66,7 @@ module Config
 
         it 'includes the hash' do
           h = {
-            'db' =>
-            {
+            'db' => {
               'adapter' => 'mysql2',
               'encoding' => 'utf8',
               'pool' => 5,

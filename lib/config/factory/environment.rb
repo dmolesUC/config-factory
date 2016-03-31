@@ -3,6 +3,7 @@ module Config
     class Environment
 
       attr_reader :name
+      attr_reader :configs
 
       def initialize(name:, configs:)
         self.name = name
