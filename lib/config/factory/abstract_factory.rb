@@ -24,11 +24,6 @@ module Config
         mod.define_singleton_method(:products_by_filter) { registry }
       end
 
-      def self.can_build(&block)
-        @product_filter = block
-        products_by_filter[self] = block
-      end
-
       def for_environment(env, config_name)
         arg_hash = env.args_for(config_name)
         fail ArgumentError, "no #{self} arguments found for config #{config_name} in environment #{env}" unless arg_hash
