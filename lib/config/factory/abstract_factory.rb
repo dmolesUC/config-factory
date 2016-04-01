@@ -15,7 +15,7 @@ module Config
         end
       end
 
-      # TODO: clean this up, document, release
+      # TODO: figure out how to push the registry down to the extending class (immediate only)
       def self.extended(mod)
         registry = products_by_filter
         mod.define_singleton_method(:can_build) do |&block|

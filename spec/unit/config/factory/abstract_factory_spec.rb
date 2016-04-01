@@ -29,8 +29,8 @@ module Config
             host: 'mysql-dev.example.org',
             port: 3306
           }
-          product = DBConfig.build_from(config_hash)
-          expect(product).to be_a(DBConfig)
+          product = MysqlConfig.build_from(config_hash)
+          expect(product).to be_a(MysqlConfig)
           expect(product.connection_info).to eq(config_hash)
         end
       end
