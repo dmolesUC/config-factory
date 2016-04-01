@@ -55,6 +55,20 @@ module Config
           expect(env).to receive(:args_for).with(:source) { config_hash }
           expect { SourceConfig.for_environment(env, :source) }.to raise_error(ArgumentError, /SourceConfig.*protocol.*Elvis/)
         end
+
+        it "can build a class without a declared key, so long as it's registered" do
+          config_hash = {
+            adapter: 'mysql2',
+            encoding: 'utf8',
+            pool: 5,
+            database: 'example_pord',
+            host: 'mysql-dev.example.org',
+            port: 3306
+          }
+          product = PersistenceConfig.build_from(config_hash)
+          expect(product).to be_a(DBConfig)
+          expect(product.connection_info).to eq(config_hash)
+        end
       end
 
       describe '#from_file' do

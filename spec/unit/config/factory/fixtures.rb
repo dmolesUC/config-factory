@@ -41,10 +41,16 @@ class ResyncSourceConfig < SourceConfig
   end
 end
 
-class DBConfig
+class PersistenceConfig
   include Config::Factory
+end
 
+class DBConfig < PersistenceConfig
   attr_reader :connection_info
+
+  can_build do |args|
+    args.key?(:adapter)
+  end
 
   def initialize(connection_info)
     @connection_info = connection_info

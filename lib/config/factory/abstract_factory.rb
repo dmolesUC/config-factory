@@ -9,10 +9,23 @@ module Config
 
       def key(k)
         @product_key = k
-        registry = products
+        registry = products_by_key
         define_singleton_method(k) do |v|
           registry[v] = self
         end
+      end
+
+      def self.extended(mod)
+        registry = products_by_filter
+        mod.define_singleton_method(:can_build) do |&block|
+          registry[self] = block
+        end
+        mod.define_singleton_method(:products_by_filter) { registry }
+      end
+
+      def self.can_build(&block)
+        @product_filter = block
+        products_by_filter[self] = block
       end
 
       def for_environment(env, config_name)
@@ -36,11 +49,19 @@ module Config
       private
 
       def find_product_class(args)
-        return self unless product_key
-        fail ArgumentError, "product key #{product_key} not found in argument hash #{args}" unless args.key?(product_key)
-        key_value = args.delete(product_key)
-        product_class = products[key_value]
-        fail ArgumentError, "No #{name} product class found for #{product_key}: #{key_value}" unless product_class
+        pk = product_key
+        return product_for_key(pk, args) if pk
+        products_by_filter.each_pair do |product, filter|
+          return product if filter.call(args)
+        end
+        self
+      end
+
+      def product_for_key(pk, args)
+        fail ArgumentError, "product key #{pk} not found in argument hash #{args}" unless args.key?(pk)
+        key_value = args.delete(pk)
+        product_class = products_by_key[key_value]
+        fail ArgumentError, "No #{name} product class found for #{pk}: #{key_value}" unless product_class
         product_class
       end
 
@@ -51,8 +72,12 @@ module Config
         end.to_h
       end
 
-      def products
-        @products ||= {}
+      def products_by_key
+        @products_by_key ||= {}
+      end
+
+      def self.products_by_filter
+        @products_by_filter ||= {}
       end
     end
   end
