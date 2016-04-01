@@ -15,6 +15,7 @@ module Config
         end
       end
 
+      # TODO: clean this up, document, release
       def self.extended(mod)
         registry = products_by_filter
         mod.define_singleton_method(:can_build) do |&block|
