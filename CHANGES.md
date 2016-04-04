@@ -1,6 +1,11 @@
+## 0.0.8 (4 April 2016)
+
+- Support looking up implementation classes based on an argument
+  filter
+
 ## 0.0.7 (31 March 2016)
 
-- Support direct instantiation of concrete config classes without
+- Support direct instantiation of implementation classes without
   product keys
 
 ## 0.0.6 (16 March 2016)
