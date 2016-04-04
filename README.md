@@ -9,6 +9,159 @@ A gem for creating configuration classes using the
 [Abstract Factory](https://web.archive.org/web/20111109224959/http://www.informit.com/articles/article.aspx?p=1398599),
 pattern, with run-time configuration provided by hashes or YAML files.
 
+## Factory lookup patterns
+
+### Looking up concrete factory classes based on a key value
+
+In the basic use case, an abstract factory class defines a configuration key:
+
+```ruby
+class SourceConfig
+  include Config::Factory
+  key :protocol            # <- configuration key
+end
+```
+
+This creates a corresponding DSL method (here `:protocol`), which implementation 
+classes use to register themselves.
+
+```ruby
+class OAISourceConfig < SourceConfig
+  protocol 'OAI'           # <- registers OAISourceConfig as implementation
+                           #    for the "OAI" protocol
+  def initialize(oai_base_url:, metadata_prefix:, set: nil, seconds_granularity: false)
+    # ...
+  end
+end
+
+class ResyncSourceConfig < SourceConfig
+  protocol 'Resync'        # <- registers ResyncSourceConfig as implementation
+                           #    for the "Resync" protocol
+  def initialize(capability_list_url:)
+    # ...
+  end
+end
+```
+
+At run time, `SourceConfig` finds the `protocol:` key in the configuration, and 
+based on the value `'OAI'`, instantiates an `OAISourceConfig`, passing the remaining
+arguments to the `OAISourceConfig` initializer.
+
+```YAML
+source:
+  protocol: OAI           # <- indicates we want an OAISourceConfig
+
+  # these arguments will be passed to the OAISourceConfig initializer
+  oai_base_url: http://oai.example.org/oai
+  metadata_prefix: some_prefix
+  set: some_set
+  seconds_granularity: true
+```
+
+```ruby
+SourceConfig.build_from(config)
+# => #<OAISourceConfig:0x007fc8f14a58f0>
+```
+
+### Finding concrete factory classes based on an argument filter
+
+In some cases (e.g., compatibility with existing configuration files), it may
+be necessary to have the implementation class examine the entire configuration
+hash to determine whether it can support a given configuration.
+
+```ruby
+class PersistenceConfig
+  include Config::Factory
+  # note no configuration key given
+end
+
+class DBPersistenceConfig < PersistenceConfig
+  attr_reader :connection_info
+
+  # Applies if we find 'adapter:' in the config file
+  can_build_if { |config| config.key?(:adapter) }
+
+  def initialize(connection_info)
+    @connection_info = connection_info
+  end
+end
+
+class XMLPersistenceConfig < PersistenceConfig
+  attr_reader :connection_info
+
+  # Applies if we find 'path:' in the config file
+  # and its value ends in '.xml'
+  can_build_if do |config|
+    config[:path] && config[:path].end_with?('.xml')
+  end
+
+  def initialize(connection_info)
+    @connection_info = connection_info
+  end
+end
+```
+
+This configuration will build a `DBPersistenceConfig`:
+
+```YAML
+persistence:
+  adapter: sqlite3
+  database: db/development.sqlite3
+  pool: 5
+  timeout: 5000
+```
+
+```ruby
+PersistenceConfig.build_from(config)
+# => #<DBPersistenceConfig:0x007fc8f14c4d18>
+```
+
+Whereas this configuration will build an `XMLConfig`:
+
+```YAML
+persistence:
+  path: config/persistence.xml
+```
+
+```ruby
+PersistenceConfig.build_from(config)
+# => #<XMLPersistenceConfig:0x007fc8f14ed420>
+```
+
+### Instantiating implementations directly
+
+Finally, you may have a mix of abstract and concrete factories, so that some factories
+don't need any lookup and can just be instantiated directly.
+
+```ruby
+class SolrConfig
+  include Config::Factory
+
+  def initialize(url:, proxy: nil, open_timeout: 60, read_timeout: 120)
+    # ...
+  end
+end
+```
+
+```YAML
+solr:
+  url: http://solr.example.org/
+  proxy: http://foo:bar@proxy.example.com/
+  open_timeout: 120
+  read_timeout: 300
+```
+
+```ruby
+SolrConfig.build_from(config)
+# => #<SolrConfig:0x007fc8f1504f08>
+```
+
+<!-- ## Environments -->
+
+---
+
+<!--
+
 ## Example
 
 The abstract configuration factory declares a `key`, which is used to look up the concrete
@@ -21,39 +174,11 @@ concrete classes `OAISourceConfig` and `ResyncSourceConfig` register themselves 
 will then look for a `protocol:` line in the configuration file to determine which
 registered concrete class to instantiate.
 
-```ruby
-class SourceConfig
-  include Config::Factory
-  key :protocol
-end
-
-class OAISourceConfig < SourceConfig
-  protocol 'OAI'
-
-  def initialize(oai_base_url:, metadata_prefix:, set: nil, seconds_granularity: false)
-  end
-end
-
-class ResyncSourceConfig < SourceConfig
-  protocol 'Resync'
-
-  def initialize(capability_list_url:)
-  end
-end
-```
 
 ### Single-environment example
 
 Configuration file:
 
-```YAML
-source:
-  protocol: OAI
-  oai_base_url: http://oai.example.org/oai
-  metadata_prefix: some_prefix
-  set: some_set
-  seconds_granularity: true
-```
 
 Loading:
 
@@ -128,3 +253,5 @@ production:
     port: 3306
     encoding: utf8
 ```
+
+-->
