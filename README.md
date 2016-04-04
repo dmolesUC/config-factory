@@ -9,6 +9,14 @@ A gem for creating configuration classes using the
 [Abstract Factory](https://web.archive.org/web/20111109224959/http://www.informit.com/articles/article.aspx?p=1398599),
 pattern, with run-time configuration provided by hashes or YAML files.
 
+- [Factory lookup patterns](#factory-lookup-patterns)
+  - [Looking up concrete factory classes based on a key value](#looking-up-concrete-factory-classes-based-on-a-key-value)
+  - [Finding concrete factory classes based on an argument filter](#finding-concrete-factory-classes-based-on-an-argument-filter)
+  - [Instantiating implementations directly](#instantiating-implementations-directly)
+- [Environments](#environments)
+  - [Multiple environments](#multiple-environments)
+  - [Single environment](#single-environment)
+
 ## Factory lookup patterns
 
 ### Looking up concrete factory classes based on a key value
@@ -59,6 +67,7 @@ source:
 ```
 
 ```ruby
+config = YAML.load_file('config.yml')
 SourceConfig.build_from(config, :source)
 # => #<OAISourceConfig:0x007fc8f14a58f0>
 ```
@@ -112,6 +121,7 @@ persistence:
 ```
 
 ```ruby
+config = YAML.load_file('config.yml')
 PersistenceConfig.build_from(config, :persistence)
 # => #<DBPersistenceConfig:0x007fc8f14c4d18>
 ```
@@ -124,6 +134,7 @@ persistence:
 ```
 
 ```ruby
+config = YAML.load_file('config.yml')
 PersistenceConfig.build_from(config, :persistence)
 # => #<XMLPersistenceConfig:0x007fc8f14ed420>
 ```
@@ -152,106 +163,143 @@ solr:
 ```
 
 ```ruby
+config = YAML.load_file('config.yml')
 SolrConfig.build_from(config, :solr)
 # => #<SolrConfig:0x007fc8f1504f08>
 ```
 
-<!-- ## Environments -->
+## Environments
 
----
+The YAML examples above each show only the configuration for a single factory. However,
+`Config::Factory` also supports a structured configuration file with configurations for
+multiple factories, optionally organized into environments.
 
-<!--
+### Multiple environments
 
-## Example
-
-The abstract configuration factory declares a `key`, which is used to look up the concrete
-config class for a given configuration. Concrete implementations register themselves with a
-DSL method named after the `key` value.
-
-In the example below, the `SourceConfig` abstract factory declares the key `:protocol`; the
-concrete classes `OAISourceConfig` and `ResyncSourceConfig` register themselves with
-`protocol: 'OAI'` and `protocol: 'Resync'`, respectively. `SourceConfig.for_environment()`
-will then look for a `protocol:` line in the configuration file to determine which
-registered concrete class to instantiate.
-
-
-### Single-environment example
-
-Configuration file:
-
-
-Loading:
+The `Environments.load_file()` method loads a multi-environment config file as a hash
+of `Environment` instances.
 
 ```ruby
-environment = Environment.load_file('spec/data/single-environment.yml')
-# => #<Config::Factory::Environment:0x007fe8d3883240 @name=:production, @configs={"source"=>{"protocol"=>"OAI", "oai_base_url"=>"http://oai.example.org/oai", "metadata_prefix"=>"some_prefix", "set"=>"some_set", "seconds_granularity"=>true}}> 
-source_config = SourceConfig.for_environment(environment, :source)
-# => #<OAISourceConfig:0x007fe8d38b3990 @oai_base_url="http://oai.example.org/oai", @metadata_prefix="some_prefix", @set="some_set", @seconds_granularity=true> 
+envs = Environments.load_file('config.yml')
+# => {:defaults=>#<Environment:0x007f8e9a578818>,
+#     :development=>#<Environment:0x007f8e9a578728>,
+#     :test=>#<Environment:0x007f8e9a578660>,
+#     :production=>#<Environment:0x007f8e9a578520>}
+test = envs[:test]
+# => #<Environment:0x007f8e9a578660>
 ```
 
-### Multiple-environment example
+The `AbstractFactory.for_environment()` method takes an environment instance and a 
+configuration section name.
 
-Configuration file:
+```ruby
+source = SourceConfig.for_environment(test, :source)
+# => #<ResyncSourceConfig:0x007f8e9a54a878>
+index = IndexConfig.for_environment(test, :index)
+# => #<SolrConfig:0x007f8e9a5383a8>
+persistence = PersistenceConfig.for_environment(test, :persistence)
+# => #<DBConfig:0x007f8e9a5019e8>
+```
+
+The configuration file for the examples above. Note that standard YAML features such
+as references are supported.
 
 ```YAML
-test:
-  source:
-    protocol: Resync
-    capability_list_url: http://localhost:8888/capabilitylist.xml
-
-production:
+defaults: &defaults
   source:
     protocol: OAI
     oai_base_url: http://oai.example.org/oai
     metadata_prefix: some_prefix
     set: some_set
     seconds_granularity: true
-```
+  index:
+    adapter: solr
+    url: http://solr.example.org/
+    proxy: http://foo:bar@proxy.example.com/
+    open_timeout: 120
+    read_timeout: 300
 
-Loading:
+development:
+  <<: *defaults
+  persistence:
+    adapter: mysql2
+    encoding: utf8
+    pool: 5
+    database: example_dev
+    host: mysql-dev.example.org
+    port: 3306
+  index:
+    adapter: solr
+    url: http://solr-dev.example.org/
+    proxy: http://foo:bar@proxy.example.com/
+    open_timeout: 120
+    read_timeout: 300
 
-```ruby
-environments = Environments.load_file('spec/data/multiple_environments.yml')
-# => {:test=>#<Config::Factory::Environment:0x007fe8d3863dc8 @name=:test, @configs={"source"=>{"protocol"=>"Resync", "capability_list_url"=>"http://localhost:8888/capabilitylist.xml"}}>, :production=>#<Config::Factory::Environment:0x007fe8d3863be8 @name=:production, @configs={"source"=>{"protocol"=>"OAI", "oai_base_url"=>"http://oai.example.org/oai", "metadata_prefix"=>"some_prefix", "set"=>"some_set", "seconds_granularity"=>true}}>} 
-test_env = environments[:test]
-# => #<Config::Factory::Environment:0x007fe8d383a400 @name=:test, @configs={"source"=>{"protocol"=>"Resync", "capability_list_url"=>"http://localhost:8888/capabilitylist.xml"}}> 
-source_config = SourceConfig.for_environment(test_env, :source)
-# => #<ResyncSourceConfig:0x007fe8d48180c0 @capability_list_url="http://localhost:8888/capabilitylist.xml"> 
-```
-
-## Config classes with only one implementation
-
-`config-factory` also supports instantiating concrete configuration classes directly.
-In this case, we simply don't declare a `key` for the class, and the configuration hash
-will be passed directly to the initializer of the concrete class.
-
-```ruby
-class DBConfig
-  include Config::Factory
-
-  def initialize(connection_info)
-    @connection_info = connection_info
-  end
-end
-```
-
-```YAML
 test:
-  db:
+  persistence:
     adapter: sqlite3
     database: ':memory:'
     pool: 5
     timeout: 5000
+  source:
+    protocol: Resync
+    capability_list_url: http://localhost:8888/capabilitylist.xml
+  index:
+    adapter: solr
+    url: http://localhost:8000/solr/
 
 production:
-  db:
+  <<: *defaults
+  persistence:
     adapter: mysql2
-    host: mydb.example.org
-    database: myapp
-    username: myuser
-    password: blank
-    port: 3306
     encoding: utf8
+    pool: 5
+    database: example_prod
+    host: mysql.example.org
+    port: 3306
 ```
 
--->
+The `Environments` module supports arbitrary environment names, but the standard ones
+are `:defaults`, `:development`, `:test`, `:stage`, `:staging,` and `:production`. The
+`Environments.load_file` method will warn if none of these are present, as this might
+indicate loading a single-environment config file as multiple by mistake.
+
+### Single environment
+
+For a single-environment config file, use the `load_file()` method on the `Environment`
+class itself (not the `Environments` module, plural):
+
+```ruby
+env = Environment.load_file('config.yml')
+# => #<Environment:0x007f8e9a49b1c0>
+persistence = PersistenceConfig.for_environment(env, :persistence)
+# => #<DBConfig:0x007f8e9a45abe8>
+source = SourceConfig.for_environment(env, :source)
+# => #<OAISourceConfig:0x007f8e9a482fa8>
+index = IndexConfig.for_environment(env, :index)
+# => #<SolrConfig:0x007f8e9a4438a8>
+```
+
+```YAML
+persistence:
+  adapter: mysql2
+  encoding: utf8
+  pool: 5
+  database: example_prod
+  host: mysql-dev.example.org
+  port: 3306
+source:
+  protocol: OAI
+  oai_base_url: http://oai.example.org/oai
+  metadata_prefix: some_prefix
+  set: some_set
+  seconds_granularity: true
+index:
+  adapter: solr
+  url: http://solr.example.org/
+  proxy: http://foo:bar@proxy.example.com/
+  open_timeout: 120
+  read_timeout: 300
+```
+
+By default, a single environment uses the environment name `:production`.
