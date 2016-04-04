@@ -34,9 +34,10 @@ module Config
         for_environment(env, config_name)
       end
 
-      def build_from(arg_hash)
+      def build_from(arg_hash, section_name = nil)
         fail ArgumentError, "nil argument hash passed to #{self}.build_from" unless arg_hash
         args = deep_symbolize_keys(arg_hash)
+        args = args[section_name] if section_name
         impl_class = find_impl_class(args)
         impl_class.new(args)
       end

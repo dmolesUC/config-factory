@@ -59,7 +59,7 @@ source:
 ```
 
 ```ruby
-SourceConfig.build_from(config)
+SourceConfig.build_from(config, :source)
 # => #<OAISourceConfig:0x007fc8f14a58f0>
 ```
 
@@ -112,7 +112,7 @@ persistence:
 ```
 
 ```ruby
-PersistenceConfig.build_from(config)
+PersistenceConfig.build_from(config, :persistence)
 # => #<DBPersistenceConfig:0x007fc8f14c4d18>
 ```
 
@@ -124,7 +124,7 @@ persistence:
 ```
 
 ```ruby
-PersistenceConfig.build_from(config)
+PersistenceConfig.build_from(config, :persistence)
 # => #<XMLPersistenceConfig:0x007fc8f14ed420>
 ```
 
@@ -152,7 +152,7 @@ solr:
 ```
 
 ```ruby
-SolrConfig.build_from(config)
+SolrConfig.build_from(config, :solr)
 # => #<SolrConfig:0x007fc8f1504f08>
 ```
 
