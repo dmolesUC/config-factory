@@ -50,7 +50,7 @@ end
 class DBConfig < PersistenceConfig
   attr_reader :connection_info
 
-  can_build { |args| args.key?(:adapter) }
+  can_build_if { |args| args.key?(:adapter) }
 
   def initialize(connection_info)
     @connection_info = connection_info
@@ -61,6 +61,8 @@ end
 
 class MysqlConfig
   include Config::Factory
+
+  attr_reader :connection_info
 
   def initialize(connection_info)
     @connection_info = connection_info

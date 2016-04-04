@@ -7,20 +7,20 @@ module Config
       describe '#build_from' do
         it 'builds the correct class with the correct config' do
           config_hash = { protocol: 'OAI', oai_base_url: 'http://oai.example.org/oai', metadata_prefix: 'some_prefix', set: 'some_set', seconds_granularity: true }
-          product = SourceConfig.build_from(config_hash)
-          expect(product).to be_an(OAISourceConfig)
+          impl = SourceConfig.build_from(config_hash)
+          expect(impl).to be_an(OAISourceConfig)
           args = { oai_base_url: URI('http://oai.example.org/oai'), metadata_prefix: 'some_prefix', set: 'some_set', seconds_granularity: true }
           args.each do |k, v|
-            expect(product.send(k)).to eq(v)
+            expect(impl.send(k)).to eq(v)
           end
         end
 
-        it 'raises a sensible exception if no product found for the key' do
+        it 'raises a sensible exception if no impl found for the key' do
           config_hash = { protocol: 'Elvis' }
           expect { SourceConfig.build_from(config_hash) }.to raise_error(ArgumentError, /SourceConfig.*protocol.*Elvis/)
         end
 
-        it 'supports concrete factories without product keys' do
+        it 'supports implementation factories without impl keys' do
           config_hash = {
             adapter: 'mysql2',
             encoding: 'utf8',
@@ -29,9 +29,9 @@ module Config
             host: 'mysql-dev.example.org',
             port: 3306
           }
-          product = MysqlConfig.build_from(config_hash)
-          expect(product).to be_a(MysqlConfig)
-          expect(product.connection_info).to eq(config_hash)
+          impl = MysqlConfig.build_from(config_hash)
+          expect(impl).to be_a(MysqlConfig)
+          expect(impl.connection_info).to eq(config_hash)
         end
       end
 
@@ -41,15 +41,15 @@ module Config
           env = instance_double(Environment)
           expect(env).to receive(:args_for).with(:source) { config_hash }
 
-          product = SourceConfig.for_environment(env, :source)
-          expect(product).to be_an(OAISourceConfig)
+          impl = SourceConfig.for_environment(env, :source)
+          expect(impl).to be_an(OAISourceConfig)
           args = { oai_base_url: URI('http://oai.example.org/oai'), metadata_prefix: 'some_prefix', set: 'some_set', seconds_granularity: true }
           args.each do |k, v|
-            expect(product.send(k)).to eq(v)
+            expect(impl.send(k)).to eq(v)
           end
         end
 
-        it 'raises a sensible exception if no product found for the key' do
+        it 'raises a sensible exception if no impl found for the key' do
           config_hash = { protocol: 'Elvis' }
           env = instance_double(Environment)
           expect(env).to receive(:args_for).with(:source) { config_hash }
@@ -65,19 +65,19 @@ module Config
             host: 'mysql-dev.example.org',
             port: 3306
           }
-          product = PersistenceConfig.build_from(config_hash)
-          expect(product).to be_a(DBConfig)
-          expect(product.connection_info).to eq(config_hash)
+          impl = PersistenceConfig.build_from(config_hash)
+          expect(impl).to be_a(DBConfig)
+          expect(impl.connection_info).to eq(config_hash)
         end
       end
 
       describe '#from_file' do
         it 'builds the correct class with the correct config' do
-          product = SourceConfig.from_file('spec/data/single-environment.yml', :source)
-          expect(product).to be_an(OAISourceConfig)
+          impl = SourceConfig.from_file('spec/data/single-environment.yml', :source)
+          expect(impl).to be_an(OAISourceConfig)
           args = { oai_base_url: URI('http://oai.example.org/oai'), metadata_prefix: 'some_prefix', set: 'some_set', seconds_granularity: true }
           args.each do |k, v|
-            expect(product.send(k)).to eq(v)
+            expect(impl.send(k)).to eq(v)
           end
         end
       end

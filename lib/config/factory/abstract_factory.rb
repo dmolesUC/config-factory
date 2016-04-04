@@ -5,23 +5,22 @@ module Config
     end
 
     module AbstractFactory
-      attr_reader :product_key
+      attr_reader :impl_key
 
       def key(k)
-        @product_key = k
-        registry = products_by_key
+        @impl_key = k
+        registry = impls_by_key
         define_singleton_method(k) do |v|
           registry[v] = self
         end
       end
 
-      # TODO: figure out how to push the registry down to the extending class (immediate only)
       def self.extended(mod)
-        registry = products_by_filter
-        mod.define_singleton_method(:can_build) do |&block|
-          registry[self] = block
+        filter_registry = {}
+        mod.define_singleton_method(:can_build_if) do |&block|
+          filter_registry[self] = block
         end
-        mod.define_singleton_method(:products_by_filter) { registry }
+        mod.define_singleton_method(:filters_by_impl_class) { filter_registry }
       end
 
       def for_environment(env, config_name)
@@ -38,27 +37,27 @@ module Config
       def build_from(arg_hash)
         fail ArgumentError, "nil argument hash passed to #{self}.build_from" unless arg_hash
         args = deep_symbolize_keys(arg_hash)
-        product_class = find_product_class(args)
-        product_class.new(args)
+        impl_class = find_impl_class(args)
+        impl_class.new(args)
       end
 
       private
 
-      def find_product_class(args)
-        pk = product_key
-        return product_for_key(pk, args) if pk
-        products_by_filter.each_pair do |product, filter|
-          return product if filter.call(args)
+      def find_impl_class(args)
+        pk = impl_key
+        return impl_for_key(pk, args) if pk
+        filters_by_impl_class.each_pair do |impl_class, filter|
+          return impl_class if filter.call(args)
         end
         self
       end
 
-      def product_for_key(pk, args)
-        fail ArgumentError, "product key #{pk} not found in argument hash #{args}" unless args.key?(pk)
-        key_value = args.delete(pk)
-        product_class = products_by_key[key_value]
-        fail ArgumentError, "No #{name} product class found for #{pk}: #{key_value}" unless product_class
-        product_class
+      def impl_for_key(key_sym, args)
+        fail ArgumentError, "implementation key #{key_sym} not found in argument hash #{args}" unless args.key?(key_sym)
+        key_value = args.delete(key_sym)
+        impl_class = impls_by_key[key_value]
+        fail ArgumentError, "No #{name} implementation found for #{key_sym}: #{key_value}" unless impl_class
+        impl_class
       end
 
       def deep_symbolize_keys(val)
@@ -68,13 +67,10 @@ module Config
         end.to_h
       end
 
-      def products_by_key
-        @products_by_key ||= {}
+      def impls_by_key
+        @impls_by_key ||= {}
       end
 
-      def self.products_by_filter
-        @products_by_filter ||= {}
-      end
     end
   end
 end
