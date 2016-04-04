@@ -50,7 +50,19 @@ end
 class DBConfig < PersistenceConfig
   attr_reader :connection_info
 
-  can_build_if { |args| args.key?(:adapter) }
+  can_build_if { |config| config.key?(:adapter) }
+
+  def initialize(connection_info)
+    @connection_info = connection_info
+  end
+end
+
+class XMLConfig < PersistenceConfig
+  attr_reader :connection_info
+
+  can_build_if do |config|
+    config[:path] && config[:path].end_with?('.xml')
+  end
 
   def initialize(connection_info)
     @connection_info = connection_info

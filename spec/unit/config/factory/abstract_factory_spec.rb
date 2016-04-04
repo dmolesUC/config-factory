@@ -25,7 +25,7 @@ module Config
             adapter: 'mysql2',
             encoding: 'utf8',
             pool: 5,
-            database: 'example_pord',
+            database: 'example_prod',
             host: 'mysql-dev.example.org',
             port: 3306
           }
@@ -61,7 +61,7 @@ module Config
             adapter: 'mysql2',
             encoding: 'utf8',
             pool: 5,
-            database: 'example_pord',
+            database: 'example_prod',
             host: 'mysql-dev.example.org',
             port: 3306
           }
