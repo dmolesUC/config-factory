@@ -44,6 +44,9 @@ module Config
           env = Environment.load_file('spec/data/single-environment.yml')
           expect(env).to be_an(Environment)
           expect(env.name).to eq(Environments::DEFAULT_ENVIRONMENT)
+
+          pers = PersistenceConfig.for_environment(env, :persistence)
+          expect(pers).to be_a(DBConfig)
         end
 
         it 'raises an error for malformed files' do
