@@ -6,17 +6,17 @@ module Config
     describe AbstractFactory do
       describe '#build_from' do
         it 'builds the correct class with the correct config' do
-          config_hash = {protocol: 'OAI', oai_base_url: 'http://oai.example.org/oai', metadata_prefix: 'some_prefix', set: 'some_set', seconds_granularity: true}
+          config_hash = { protocol: 'OAI', oai_base_url: 'http://oai.example.org/oai', metadata_prefix: 'some_prefix', set: 'some_set', seconds_granularity: true }
           impl = SourceConfig.build_from(config_hash)
           expect(impl).to be_an(OAISourceConfig)
-          args = {oai_base_url: URI('http://oai.example.org/oai'), metadata_prefix: 'some_prefix', set: 'some_set', seconds_granularity: true}
+          args = { oai_base_url: URI('http://oai.example.org/oai'), metadata_prefix: 'some_prefix', set: 'some_set', seconds_granularity: true }
           args.each do |k, v|
             expect(impl.send(k)).to eq(v)
           end
         end
 
         it 'raises a sensible exception if no impl found for the key' do
-          config_hash = {protocol: 'Elvis'}
+          config_hash = { protocol: 'Elvis' }
           expect { SourceConfig.build_from(config_hash) }.to raise_error(ArgumentError, /SourceConfig.*protocol.*Elvis/)
         end
 
@@ -65,20 +65,20 @@ module Config
 
       describe '#for_environment' do
         it 'builds the correct class with the correct config' do
-          config_hash = {protocol: 'OAI', oai_base_url: 'http://oai.example.org/oai', metadata_prefix: 'some_prefix', set: 'some_set', seconds_granularity: true}
+          config_hash = { protocol: 'OAI', oai_base_url: 'http://oai.example.org/oai', metadata_prefix: 'some_prefix', set: 'some_set', seconds_granularity: true }
           env = instance_double(Environment)
           expect(env).to receive(:args_for).with(:source) { config_hash }
 
           impl = SourceConfig.for_environment(env, :source)
           expect(impl).to be_an(OAISourceConfig)
-          args = {oai_base_url: URI('http://oai.example.org/oai'), metadata_prefix: 'some_prefix', set: 'some_set', seconds_granularity: true}
+          args = { oai_base_url: URI('http://oai.example.org/oai'), metadata_prefix: 'some_prefix', set: 'some_set', seconds_granularity: true }
           args.each do |k, v|
             expect(impl.send(k)).to eq(v)
           end
         end
 
         it 'raises a sensible exception if no impl found for the key' do
-          config_hash = {protocol: 'Elvis'}
+          config_hash = { protocol: 'Elvis' }
           env = instance_double(Environment)
           expect(env).to receive(:args_for).with(:source) { config_hash }
           expect { SourceConfig.for_environment(env, :source) }.to raise_error(ArgumentError, /SourceConfig.*protocol.*Elvis/)
@@ -89,7 +89,7 @@ module Config
         it 'builds the correct class with the correct config' do
           impl = SourceConfig.from_file('spec/data/single-environment.yml', :source)
           expect(impl).to be_an(OAISourceConfig)
-          args = {oai_base_url: URI('http://oai.example.org/oai'), metadata_prefix: 'some_prefix', set: 'some_set', seconds_granularity: true}
+          args = { oai_base_url: URI('http://oai.example.org/oai'), metadata_prefix: 'some_prefix', set: 'some_set', seconds_granularity: true }
           args.each do |k, v|
             expect(impl.send(k)).to eq(v)
           end

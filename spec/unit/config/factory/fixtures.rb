@@ -36,7 +36,7 @@ class ResyncSourceConfig < SourceConfig
   attr_reader :capability_list_url
 
   def initialize(capability_list_url:)
-    super(url: capability_list_url)
+    super(source_url: capability_list_url)
     @capability_list_url = source_uri
   end
 end
@@ -96,7 +96,7 @@ class IndexConfig
 end
 
 class SolrConfig < IndexConfig
-  adapter 'Solr'
+  adapter 'solr'
 
   attr_reader :url
   attr_reader :proxy

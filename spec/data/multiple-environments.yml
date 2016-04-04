@@ -18,7 +18,7 @@ development:
     adapter: mysql2
     encoding: utf8
     pool: 5
-    database: example_pord
+    database: example_dev
     host: mysql-dev.example.org
     port: 3306
   index:
@@ -47,6 +47,6 @@ production:
     adapter: mysql2
     encoding: utf8
     pool: 5
-    database: example_pord
+    database: example_prod
     host: mysql.example.org
     port: 3306
