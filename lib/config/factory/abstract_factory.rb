@@ -39,7 +39,11 @@ module Config
         args = deep_symbolize_keys(arg_hash)
         args = args[section_name] if section_name
         impl_class = find_impl_class(args)
-        impl_class.new(args)
+        begin
+          return impl_class.new(args)
+        rescue => e
+          fail ArgumentError, "Error instantiating #{impl_class} with arguments #{args}: #{e.message}"
+        end
       end
 
       private
@@ -58,7 +62,7 @@ module Config
         key_value = args.delete(key_sym)
         impl_class = impls_by_key[key_value]
         fail ArgumentError, "No #{name} implementation found for #{key_sym}: #{key_value}" unless impl_class
-        impl_class
+        return impl_class
       end
 
       def deep_symbolize_keys(val)
