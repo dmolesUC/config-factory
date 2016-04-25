@@ -1,5 +1,5 @@
 require 'yaml'
-require_relative 'environment'
+require 'config/factory/environment'
 
 module Config
   module Factory
