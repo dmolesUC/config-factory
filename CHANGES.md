@@ -1,3 +1,8 @@
+## 0.0.9 (9 August 2016)
+
+- Add `AbstractFactory#env_name` and inject the environment name, if available, on construction,
+  in case factories need to know their environments. The default value is `Environments::DEFAULT_ENVIRONMENT`.
+
 ## 0.0.8 (4 April 2016)
 
 - Support looking up implementation classes based on an argument

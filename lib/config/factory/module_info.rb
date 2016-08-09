@@ -4,7 +4,7 @@ module Config
     NAME = 'config-factory'
 
     # The version of this gem
-    VERSION = '0.0.8'
+    VERSION = '0.0.9'
 
     # The copyright notice for this gem
     COPYRIGHT = 'Copyright (c) 2016 The Regents of the University of California'
