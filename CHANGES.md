@@ -1,3 +1,7 @@
+## 0.1.10 (next)
+
+- Update to Ruby 2.2.5
+
 ## 0.0.9 (9 August 2016)
 
 - Add `AbstractFactory#env_name` and inject the environment name, if available, on construction,
