@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'config/factory'
 require 'uri'
 
@@ -61,7 +63,7 @@ class XMLConfig < PersistenceConfig
   attr_reader :connection_info
 
   can_build_if do |config|
-    config[:path] && config[:path].end_with?('.xml')
+    config[:path]&.end_with?('.xml')
   end
 
   def initialize(connection_info)

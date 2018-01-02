@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 require_relative 'fixtures'
 
@@ -8,7 +10,7 @@ module Config
         it 'loads a multi-environment config file' do
           envs = Environments.load_file('spec/data/multiple-environments.yml')
           expect(envs).to be_a(Hash)
-          expected = [:defaults, :development, :test, :production]
+          expected = %i[defaults development test production]
           expect(envs.size).to eq(expected.size)
           expected.each do |env_name|
             env = envs[env_name]
@@ -67,7 +69,7 @@ module Config
         it 'reads a standard ActiveRecord DB config' do
           envs = Environments.load_file('spec/data/db-config.yml')
           expect(envs).to be_a(Hash)
-          expected = [:development, :test, :production]
+          expected = %i[development test production]
           expect(envs.size).to eq(expected.size)
           expected.each do |env_name|
             env = envs[env_name]

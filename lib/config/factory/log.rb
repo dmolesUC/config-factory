@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'logger'
 
 module Config
@@ -20,8 +22,6 @@ module Config
       @log = new_logger(logdev: value)
     end
 
-    private
-
     def self.new_logger(logdev:, level: Logger::DEBUG, shift_age: 10, shift_size: 1024 * 1024)
       logger = Logger.new(logdev, shift_age, shift_size)
       logger.level = level
@@ -30,6 +30,7 @@ module Config
       end
       logger
     end
+    private_class_method :new_logger
 
   end
 end

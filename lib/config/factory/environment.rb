@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Config
   module Factory
     class Environment
@@ -17,7 +19,7 @@ module Config
 
       def self.load_file(path)
         hash = YAML.load_file(path)
-        fail IOError, "Unable to load YAML file #{path}" unless hash && hash.is_a?(Hash)
+        raise IOError, "Unable to load YAML file #{path}" unless hash && hash.is_a?(Hash)
         load_hash(hash)
       end
 
@@ -32,12 +34,12 @@ module Config
       private
 
       def name=(v)
-        fail ArgumentError, "Environment name #{v} must be a symbol" unless v && v.is_a?(Symbol)
+        raise ArgumentError, "Environment name #{v} must be a symbol" unless v && v.is_a?(Symbol)
         @name = v
       end
 
       def configs=(v)
-        fail ArgumentError, "Environment configs #{v} must be a hash" unless v && v.is_a?(Hash)
+        raise ArgumentError, "Environment configs #{v} must be a hash" unless v && v.is_a?(Hash)
         @configs = v
       end
 

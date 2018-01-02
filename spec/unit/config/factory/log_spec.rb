@@ -1,4 +1,7 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
+require 'time'
 
 module Config
   module Factory
@@ -12,7 +15,7 @@ module Config
           logged = out.string
           expect(logged).to include(msg)
           timestamp_str = logged.split[0]
-          timestamp = DateTime.parse(timestamp_str)
+          timestamp = Time.parse(timestamp_str)
           expect(timestamp.to_date).to eq(Time.now.utc.to_date)
         ensure
           Factory.log_device = $stdout

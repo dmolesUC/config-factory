@@ -1,4 +1,7 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
+require 'tmpdir'
 require_relative 'fixtures'
 
 module Config
@@ -18,7 +21,7 @@ module Config
         it 'registers the configurations' do
           yaml_hash = YAML.load_file('spec/data/single-environment.yml')
           env = Environment.new(name: :test, configs: yaml_hash)
-          %w(db source index).each do |key|
+          %w[db source index].each do |key|
             expect(env.args_for(key)).to eq(yaml_hash[key])
           end
         end

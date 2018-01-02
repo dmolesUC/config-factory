@@ -1,6 +1,7 @@
-## 0.1.10 (next)
+## 0.1.10 (2 January 2018)
 
-- Update to Ruby 2.2.5
+- Update to Ruby 2.4.1
+- Update to RuboCop 0.52
 
 ## 0.0.9 (9 August 2016)
 

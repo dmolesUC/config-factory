@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'config/factory/environments'
 
 module Config
@@ -32,7 +34,7 @@ module Config
 
       def for_environment(env, config_name)
         arg_hash = env.args_for(config_name)
-        fail ArgumentError, "no #{self} arguments found for config #{config_name} in environment #{env}" unless arg_hash
+        raise ArgumentError, "no #{self} arguments found for config #{config_name} in environment #{env}" unless arg_hash
         build_from(arg_hash, nil, env.name)
       end
 
@@ -42,13 +44,13 @@ module Config
       end
 
       def build_from(arg_hash, section_name = nil, env_name = nil)
-        fail ArgumentError, "nil argument hash passed to #{self}.build_from" unless arg_hash
+        raise ArgumentError, "nil argument hash passed to #{self}.build_from" unless arg_hash
         args = deep_symbolize_keys(arg_hash)
         args = args[section_name] if section_name
         impl_class = find_impl_class(args)
         begin
           return create_impl(impl_class, args, env_name)
-        rescue => e
+        rescue StandardError => e
           raise ArgumentError, "Error instantiating #{impl_class} with arguments #{args}: #{e}"
         end
       end
@@ -65,10 +67,10 @@ module Config
       end
 
       def impl_for_key(key_sym, args)
-        fail ArgumentError, "implementation key #{key_sym} not found in argument hash #{args || 'nil'}" unless args && args.key?(key_sym)
+        raise ArgumentError, "implementation key #{key_sym} not found in argument hash #{args || 'nil'}" unless args&.key?(key_sym)
         key_value = args.delete(key_sym)
         impl_class = impls_by_key[key_value]
-        fail ArgumentError, "No #{name} implementation found for #{key_sym}: #{key_value}" unless impl_class
+        raise ArgumentError, "No #{name} implementation found for #{key_sym}: #{key_value}" unless impl_class
         impl_class
       end
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'yaml'
 require 'config/factory/environment'
 
@@ -5,12 +7,12 @@ module Config
   module Factory
     module Environments
       DEFAULT_ENVIRONMENT = :production
-      STANDARD_ENVIRONMENTS = [:defaults, :development, :test, :stage, :staging, :production].freeze
+      STANDARD_ENVIRONMENTS = %i[defaults development test stage staging production].freeze
       STANDARD_ENVIRONMENTS_NOT_FOUND = "No standard environment tags (#{STANDARD_ENVIRONMENTS.join(', ')}) found; is this really a multiple-environment configuration?"
 
       def self.load_file(path)
         hash = YAML.load_file(path)
-        fail IOError, "Unable to load YAML file #{path}" unless hash && hash.is_a?(Hash)
+        raise IOError, "Unable to load YAML file #{path}" unless hash && hash.is_a?(Hash)
         load_hash(hash)
       end
 
